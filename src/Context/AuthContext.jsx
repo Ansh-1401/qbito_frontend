@@ -75,7 +75,7 @@ export function AuthProvider({ children }) {
   // Axios interceptor for adding token
   useEffect(() => {
     const interceptor = axios.interceptors.request.use((config) => {
-      if (token && config.url?.includes("localhost:8080")) {
+      if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
       return config;
