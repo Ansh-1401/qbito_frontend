@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .glass-panel {
+    @apply bg-glass-light backdrop-blur-xl border border-glass-border shadow-glass rounded-3xl overflow-hidden transition-all duration-300;
+  }
+  .neon-active {
+    @apply border-neon-orange shadow-neon;
+  }
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  @apply bg-brand-dark text-white;
+}
+
+/* ✅ Fix horizontal overflow globally */
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* ✅ Hide scrollbar for horizontal chips */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
