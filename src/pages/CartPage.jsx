@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCart } from "../context/CartContext";
-import { useAuth } from "../context/AuthContext";
+import { useCart } from "../Context/CartContext";
+import { useAuth } from "../Context/AuthContext";
 import axios from "axios";
 
 function VegBadge({ type = "veg" }) {

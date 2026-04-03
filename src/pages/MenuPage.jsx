@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../Context/CartContext";
 import axios from "axios";
 
 // ✅ Demo data (later backend se aayega)

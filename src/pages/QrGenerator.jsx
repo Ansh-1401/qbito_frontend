@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../Context/AuthContext";
 
 export default function QrGenerator() {
   const { user } = useAuth();

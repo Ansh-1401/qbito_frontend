@@ -3,7 +3,7 @@ import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../Context/AuthContext";
 
 /* ── ORDER STATUS TABS ── */
 const ORDER_TABS = [
