@@ -5,6 +5,7 @@ import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { loadRazorpayScript } from "../utils/razorpay";
 import axios from "axios";
+import api from "../config/api";
 
 export default function OrderTracking() {
   const location = useLocation();
@@ -24,15 +25,16 @@ export default function OrderTracking() {
   useEffect(() => {
     if (!orderId) return;
 
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/orders/${orderId}`)
+    api
+      .get(`/orders/${orderId}`)
       .then((res) => {
         setStatus(res.data.status);
         if (res.data.razorpayOrderId) setRzpOrderId(res.data.razorpayOrderId);
       })
       .catch(console.error);
 
-    const socket = new SockJS(import.meta.env.VITE_WS_URL);
+    const wsUrl = import.meta.env.VITE_WS_URL || "wss://qbito-backend.onrender.com/ws";
+    const socket = new SockJS(wsUrl);
     const stompClient = Stomp.over(socket);
     stompClient.debug = () => {};
 

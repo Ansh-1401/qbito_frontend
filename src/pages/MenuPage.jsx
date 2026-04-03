@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "../Context/CartContext";
 import axios from "axios";
+import api from "../config/api";
 
 // ✅ Demo data (later backend se aayega)
 const MENU_DATA = {
@@ -176,8 +177,8 @@ export default function MenuPage() {
   // ✅ FIXED: no infinite loop now
   useEffect(() => {
     Promise.all([
-      axios.get(`${import.meta.env.VITE_API_URL}/restaurants/slug/${slug}`),
-      axios.get(`${import.meta.env.VITE_API_URL}/restaurants/slug/${slug}/menu`)
+      api.get(`/restaurants/slug/${slug}`),
+      api.get(`/restaurants/slug/${slug}/menu`)
     ])
       .then(([restroRes, menuRes]) => {
         const data = {
@@ -194,7 +195,7 @@ export default function MenuPage() {
         setRestro(data);
 
         // Fetch reviews for this restaurant
-        axios.get(`${import.meta.env.VITE_API_URL}/reviews/restaurant/${restroRes.data.id}`)
+        api.get(`/reviews/restaurant/${restroRes.data.id}`)
           .then(res => setReviews(res.data))
           .catch(err => console.error("Could not fetch reviews:", err));
 

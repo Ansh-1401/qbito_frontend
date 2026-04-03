@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
+import api from "../config/api";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -9,12 +10,12 @@ export default function AdminDashboard() {
   const [restaurants, setRestaurants] = useState([]);
 
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/restaurants`)
+    api
+      .get(`/restaurants`)
       .then((res) => setRestaurants(res.data))
       .catch(() => {});
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/orders/restaurant/1`)
+    api
+      .get(`/orders/restaurant/1`)
       .then((res) => setOrders(res.data))
       .catch(() => {});
   }, []);

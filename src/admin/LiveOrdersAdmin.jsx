@@ -3,6 +3,7 @@ import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+import api from "../config/api";
 
 const TABS = [
   { key: "PENDING", label: "New Orders", icon: "🔔", color: "orange" },
@@ -24,15 +25,16 @@ export default function LiveOrdersAdmin() {
 
   // Load existing orders from DB on mount
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/orders/restaurant/${restaurantId}`)
+    api
+      .get(`/orders/restaurant/${restaurantId}`)
       .then((res) => setOrders(res.data))
       .catch((err) => console.error("Failed to load orders:", err));
   }, []);
 
   // Connect WebSocket
   useEffect(() => {
-    const socket = new SockJS(import.meta.env.VITE_WS_URL);
+    const wsUrl = import.meta.env.VITE_WS_URL || "wss://qbito-backend.onrender.com/ws";
+    const socket = new SockJS(wsUrl);
     const stompClient = Stomp.over(socket);
     stompClient.debug = () => {};
 
@@ -73,7 +75,7 @@ export default function LiveOrdersAdmin() {
 
   const updateStatus = async (orderId, newStatus) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/orders/${orderId}/status`, {
+      await api.put(`/orders/${orderId}/status`, {
         status: newStatus,
       });
     } catch (err) {

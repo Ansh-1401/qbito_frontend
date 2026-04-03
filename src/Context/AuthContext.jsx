@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import api from "../config/api";
 
 const AuthContext = createContext(null);
 
@@ -11,8 +12,8 @@ export function AuthProvider({ children }) {
   // On mount, validate stored token
   useEffect(() => {
     if (token) {
-      axios
-        .get(`${import.meta.env.VITE_API_URL}/auth/me`, {
+      api
+        .get(`/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => {
@@ -28,7 +29,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (username, password) => {
-    const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
+    const res = await api.post(`/auth/login`, {
       username,
       password,
     });
@@ -45,7 +46,7 @@ export function AuthProvider({ children }) {
   };
 
   const register = async (username, password) => {
-    const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
+    const res = await api.post(`/auth/register`, {
       username,
       password,
       role: "CUSTOMER",

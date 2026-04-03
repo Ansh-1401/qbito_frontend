@@ -3,6 +3,7 @@ import { useAuth } from "../Context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+import api from "../config/api";
 
 export default function MyOrders() {
   const { user } = useAuth();
@@ -24,8 +25,8 @@ export default function MyOrders() {
 
   useEffect(() => {
     if (user?.userId) {
-      axios
-        .get(`${import.meta.env.VITE_API_URL}/orders/user/${user.userId}`)
+      api
+        .get(`/orders/user/${user.userId}`)
         .then((res) => {
           setOrders(res.data);
           setLoading(false);
@@ -57,7 +58,7 @@ export default function MyOrders() {
     if (!reviewOrder) return;
     setSubmittingReview(true);
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/reviews`, {
+      await api.post(`/reviews`, {
         restaurantId: reviewOrder.restaurantId,
         rating,
         comment

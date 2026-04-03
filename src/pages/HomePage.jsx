@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../Context/AuthContext";
 import { useCart } from "../Context/CartContext";
+import api from "../config/api";
 import axios from "axios";
 
 const container = {
@@ -23,7 +24,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_API_URL}/restaurants`)
+    api.get(`/restaurants`)
       .then(res => {
         const mapped = res.data.map(r => ({
           ...r,
