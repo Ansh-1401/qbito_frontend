@@ -9,13 +9,20 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [restaurants, setRestaurants] = useState([]);
+  const [currentRestaurant, setCurrentRestaurant] = useState(null);
 
   const restaurantId = user?.restaurantId;
 
   useEffect(() => {
     api
       .get(`/restaurants`)
-      .then((res) => setRestaurants(res.data))
+      .then((res) => {
+        setRestaurants(res.data);
+        if (restaurantId) {
+          const r = res.data.find(x => x.id === restaurantId);
+          setCurrentRestaurant(r);
+        }
+      })
       .catch(() => {});
 
     if (restaurantId) {
@@ -88,10 +95,11 @@ export default function AdminDashboard() {
       {/* Quick Actions */}
       <div className="glass-panel border border-glass-border p-6">
         <h2 className="text-xl font-extrabold tracking-tight">
-          Quick Actions
+          {currentRestaurant?.name || "Quick Actions"} 
+          {restaurantId && <span className="ml-2 text-xs font-mono text-gray-500 font-normal mt-1 block sm:inline">(ID: {restaurantId})</span>}
         </h2>
         <p className="text-gray-400 text-sm mt-1">
-          {restaurants.length} restaurant{restaurants.length !== 1 ? "s" : ""} •{" "}
+          {currentRestaurant ? `Managing ${currentRestaurant.name}` : `${restaurants.length} restaurants total`} •{" "}
           {stats.total} total orders
         </p>
 

@@ -1,5 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
+import { useAuth } from "../Context/AuthContext";
+import api from "../config/api";
 
 const linkBase =
   "flex items-center gap-3 px-4 py-3 rounded-2xl border transition font-semibold text-sm";
@@ -9,6 +11,19 @@ const linkIdle =
 
 export default function AdminLayout() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [restaurant, setRestaurant] = useState(null);
+
+  useEffect(() => {
+    if (user?.restaurantId) {
+      api.get("/restaurants")
+        .then(res => {
+          const r = res.data.find(x => x.id === user.restaurantId);
+          setRestaurant(r);
+        })
+        .catch(err => console.error("Failed to load restaurant name", err));
+    }
+  }, [user?.restaurantId]);
 
   const links = useMemo(
     () => [
@@ -27,11 +42,11 @@ export default function AdminLayout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-black font-extrabold text-lg shadow-[0_0_16px_rgba(249,115,22,0.3)]">
-              S
+              {restaurant?.name ? restaurant.name[0] : "S"}
             </div>
             <div>
               <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold leading-tight">
-                QBito
+                {restaurant?.name || "QBito"}
               </p>
               <h1 className="text-lg font-extrabold leading-tight">
                 Admin Panel

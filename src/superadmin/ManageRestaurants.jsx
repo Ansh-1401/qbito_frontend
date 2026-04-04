@@ -167,7 +167,7 @@ export default function ManageRestaurants() {
             <tr>
               <th className="px-4 py-3 text-left font-bold">ID</th>
               <th className="px-4 py-3 text-left font-bold">Name</th>
-              <th className="px-4 py-3 text-left font-bold">Slug</th>
+              <th className="px-4 py-3 text-left font-bold">Slug / Link</th>
               <th className="px-4 py-3 text-left font-bold">Category</th>
               <th className="px-4 py-3 text-left font-bold">Rating</th>
               <th className="px-4 py-3 text-right font-bold">Actions</th>
@@ -178,7 +178,16 @@ export default function ManageRestaurants() {
               <tr key={r.id} className="hover:bg-white/[0.02] transition">
                 <td className="px-4 py-3 text-gray-500">#{r.id}</td>
                 <td className="px-4 py-3 font-semibold">{r.name}</td>
-                <td className="px-4 py-3 text-gray-400">{r.slug}</td>
+                <td className="px-4 py-3 text-gray-400">
+                  <a 
+                    href={`${window.location.origin}/restro/${r.slug}`} 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="text-purple-400 hover:underline"
+                  >
+                    {r.slug} ↗
+                  </a>
+                </td>
                 <td className="px-4 py-3 text-gray-400">{r.category}</td>
                 <td className="px-4 py-3">
                   <span className="text-yellow-400">★</span> {r.rating}
