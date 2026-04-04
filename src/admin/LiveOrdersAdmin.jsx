@@ -3,6 +3,7 @@ import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "../config/api";
+import { useAuth } from "../Context/AuthContext";
 
 const TABS = [
   { key: "PENDING", label: "New Orders", icon: "🔔", color: "orange" },
@@ -15,23 +16,26 @@ const TABS = [
 ];
 
 export default function LiveOrdersAdmin() {
+  const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [connected, setConnected] = useState(false);
   const [activeTab, setActiveTab] = useState("PENDING");
   const [toast, setToast] = useState(null);
 
-  const restaurantId = 1;
+  const restaurantId = user?.restaurantId;
 
   // Load existing orders from DB on mount
   useEffect(() => {
+    if (!restaurantId) return;
     api
       .get(`/orders/restaurant/${restaurantId}`)
       .then((res) => setOrders(res.data))
       .catch((err) => console.error("Failed to load orders:", err));
-  }, []);
+  }, [restaurantId]);
 
   // Connect WebSocket
   useEffect(() => {
+    if (!restaurantId) return;
     const wsUrl = import.meta.env.VITE_WS_URL || "wss://qbito-backend.onrender.com/ws";
     const socket = new SockJS(wsUrl);
     const stompClient = Stomp.over(socket);

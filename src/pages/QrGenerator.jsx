@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { motion } from "framer-motion";
-import axios from "axios";
+import api from "../config/api";
 import { useAuth } from "../Context/AuthContext";
 
 export default function QrGenerator() {
@@ -10,17 +10,19 @@ export default function QrGenerator() {
   const [tableCount, setTableCount] = useState(1);
   const qrRef = useRef(null);
 
+  const restaurantId = user?.restaurantId;
+
   useEffect(() => {
-    if (user?.restaurantId) {
-      axios
-        .get(`${import.meta.env.VITE_API_URL}/restaurants`)
+    if (restaurantId) {
+      api
+        .get(`/restaurants`)
         .then((res) => {
-          const r = res.data.find((x) => x.id === user.restaurantId);
+          const r = res.data.find((x) => x.id === restaurantId);
           setRestaurant(r);
         })
         .catch(console.error);
     }
-  }, [user]);
+  }, [restaurantId]);
 
   const handlePrint = () => {
     const printContent = qrRef.current.innerHTML;
@@ -54,7 +56,7 @@ export default function QrGenerator() {
 
   if (!restaurant) return <div className="p-10 text-center">Loading restaurant info...</div>;
 
-  const baseUrl = "http://localhost:5173/restro";
+  const baseUrl = `${window.location.origin}/restro`;
 
   return (
     <div className="space-y-6">

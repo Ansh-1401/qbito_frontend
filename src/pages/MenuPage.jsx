@@ -171,26 +171,29 @@ export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [reviews, setReviews] = useState([]);
+  const [error, setError] = useState(null);
 
   const table = tableNo ? String(tableNo) : "0";
 
   // ✅ FIXED: no infinite loop now
   useEffect(() => {
+    setError(null);
     Promise.all([
       api.get(`/restaurants/slug/${slug}`),
       api.get(`/restaurants/slug/${slug}/menu`)
     ])
       .then(([restroRes, menuRes]) => {
         const data = {
+          id: restroRes.data.id,
           name: restroRes.data.name,
           address: restroRes.data.address,
           openTime: restroRes.data.openTime,
           cover: restroRes.data.cover,
           rating: restroRes.data.rating,
-          menu: menuRes.data.map(item => ({
+          menu: Array.isArray(menuRes.data) ? menuRes.data.map(item => ({
             ...item,
             desc: item.description
-          }))
+          })) : []
         };
         setRestro(data);
 
@@ -209,6 +212,7 @@ export default function MenuPage() {
       })
       .catch((err) => {
         console.error("Failed to load restaurant info:", err);
+        setError("Restaurant not found or could not be loaded.");
       });
   }, [slug, table]);
 
@@ -231,7 +235,32 @@ export default function MenuPage() {
     });
   }, [restro, search, activeCategory]);
 
-  if (!restro) return <div className="p-6 text-white">Loading...</div>;
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#0B0F19] text-white flex items-center justify-center p-6 text-center">
+        <div className="glass-panel p-10 border border-red-500/30">
+          <p className="text-4xl mb-4">🏪</p>
+          <h2 className="text-2xl font-extrabold">{error}</h2>
+          <button
+            onClick={() => navigate("/")}
+            className="mt-6 px-6 py-2 rounded-full bg-white/10 hover:bg-white/20 transition text-sm font-bold"
+          >
+            Go to Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!restro) {
+    return (
+      <div className="min-h-screen bg-[#0B0F19] text-white flex items-center justify-center">
+        <div className="text-center font-bold animate-pulse text-gray-500">
+          Fetching Menu...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0B0F19] text-white overflow-x-hidden relative">

@@ -2,22 +2,29 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import api from "../config/api";
+import { useAuth } from "../Context/AuthContext";
 
 export default function AdminDashboard() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [restaurants, setRestaurants] = useState([]);
+
+  const restaurantId = user?.restaurantId;
 
   useEffect(() => {
     api
       .get(`/restaurants`)
       .then((res) => setRestaurants(res.data))
       .catch(() => {});
-    api
-      .get(`/orders/restaurant/1`)
-      .then((res) => setOrders(res.data))
-      .catch(() => {});
-  }, []);
+
+    if (restaurantId) {
+      api
+        .get(`/orders/restaurant/${restaurantId}`)
+        .then((res) => setOrders(res.data))
+        .catch(() => {});
+    }
+  }, [restaurantId]);
 
   const stats = useMemo(() => {
     const pending = orders.filter((o) => o.status === "PENDING").length;

@@ -30,7 +30,7 @@ const MENU_API = `/admin/menu`;
 /* ════════════════════════════════════════════════════ */
 export default function RestaurantPanel() {
   const { user } = useAuth();
-  const restaurantId = user?.restaurantId || 1;
+  const restaurantId = user?.restaurantId;
 
   const [mainTab, setMainTab] = useState("orders"); // "orders" | "menu"
 
@@ -223,6 +223,20 @@ export default function RestaurantPanel() {
     d ? new Date(d).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) : "";
 
   /* ════════════ RENDER ════════════ */
+  if (restaurantId === undefined || restaurantId === null || restaurantId === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px] glass-panel border border-glass-border">
+        <div className="text-center p-10">
+          <p className="text-4xl mb-4">🚫</p>
+          <h2 className="text-2xl font-extrabold text-white">No Restaurant Assigned</h2>
+          <p className="text-gray-400 mt-2 max-w-md">
+            Your account is not currently linked to any restaurant. Please contact the super admin to assign your profile.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-5">
       {/* Toast */}
