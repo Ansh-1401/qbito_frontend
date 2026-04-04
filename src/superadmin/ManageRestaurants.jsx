@@ -38,9 +38,22 @@ export default function ManageRestaurants() {
     load();
   }, []);
 
+  useEffect(() => {
+    if (!editing && form.name) {
+      setForm(prev => ({ ...prev, slug: slugify(prev.name) }));
+    }
+  }, [form.name, editing]);
+
   const handleSave = async () => {
     try {
-      const payload = { ...form, slug: form.slug || slugify(form.name) };
+      const finalSlug = slugify(form.slug || form.name);
+      const payload = { ...form, slug: finalSlug };
+      
+      if (!finalSlug) {
+        alert("Please enter a name or slug.");
+        return;
+      }
+
       if (editing) {
         await api.put(`/superadmin/restaurants/${editing}`, payload);
         alert("Restaurant updated successfully!");
