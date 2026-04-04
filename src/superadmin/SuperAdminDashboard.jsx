@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
 import api from "../config/api";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 

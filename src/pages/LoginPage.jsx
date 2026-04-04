@@ -140,36 +140,6 @@ export default function LoginPage() {
                 {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
               </button>
             </div>
-
-            {isLogin && (
-              <div className="border-t border-white/10 pt-4 mt-4">
-                <p className="text-[11px] text-gray-500 text-center">
-                  Demo credentials
-                </p>
-                <div className="mt-2 grid grid-cols-2 gap-2 text-[11px]">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setUsername("admin");
-                      setPassword("admin123");
-                    }}
-                    className="px-3 py-2 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-300 hover:bg-purple-500/20 transition"
-                  >
-                    👑 Super Admin
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setUsername("restoadmin");
-                      setPassword("resto123");
-                    }}
-                    className="px-3 py-2 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-300 hover:bg-blue-500/20 transition"
-                  >
-                    🏪 Restaurant Admin
-                  </button>
-                </div>
-              </div>
-            )}
           </form>
         </div>
 

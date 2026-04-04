@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
+import api from "../config/api";
 
 const emptyUser = {
   username: "",
@@ -18,12 +18,12 @@ export default function ManageUsers() {
   const [showForm, setShowForm] = useState(false);
 
   const load = () => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/superadmin/users`)
+    api
+      .get(`/superadmin/users`)
       .then((res) => setUsers(res.data))
       .catch(console.error);
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/superadmin/restaurants`)
+    api
+      .get(`/superadmin/restaurants`)
       .then((res) => setRestaurants(res.data))
       .catch(console.error);
   };
@@ -38,12 +38,12 @@ export default function ManageUsers() {
       restaurantId: form.restaurantId || null,
     };
     if (editing) {
-      await axios.put(
-        `${import.meta.env.VITE_API_URL}/superadmin/users/${editing}`,
+      await api.put(
+        `/superadmin/users/${editing}`,
         payload
       );
     } else {
-      await axios.post(`${import.meta.env.VITE_API_URL}/superadmin/users`, payload);
+      await api.post(`/superadmin/users`, payload);
     }
     setForm(emptyUser);
     setEditing(null);
@@ -59,7 +59,7 @@ export default function ManageUsers() {
 
   const handleDelete = async (id) => {
     if (!confirm("Delete this user?")) return;
-    await axios.delete(`${import.meta.env.VITE_API_URL}/superadmin/users/${id}`);
+    await api.delete(`/superadmin/users/${id}`);
     load();
   };
 

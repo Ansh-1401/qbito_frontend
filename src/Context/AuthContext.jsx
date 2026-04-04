@@ -13,9 +13,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (token) {
       api
-        .get(`/auth/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
+        .get(`/auth/me`)
         .then((res) => {
           setUser(res.data);
         })
@@ -72,17 +70,6 @@ export function AuthProvider({ children }) {
   const isAuthenticated = !!token && !!user;
 
   const hasRole = (role) => user?.role === role;
-
-  // Axios interceptor for adding token
-  useEffect(() => {
-    const interceptor = axios.interceptors.request.use((config) => {
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    });
-    return () => axios.interceptors.request.eject(interceptor);
-  }, [token]);
 
   return (
     <AuthContext.Provider

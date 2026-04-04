@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
+import api from "../config/api";
 import { useAuth } from "../Context/AuthContext";
 
 /* ── ORDER STATUS TABS ── */
@@ -25,7 +25,7 @@ const emptyItem = {
   image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&q=80",
 };
 
-const MENU_API = `${import.meta.env.VITE_API_URL}/admin/menu`;
+const MENU_API = `/admin/menu`;
 
 /* ════════════════════════════════════════════════════ */
 export default function RestaurantPanel() {
@@ -49,8 +49,8 @@ export default function RestaurantPanel() {
 
   /* ──────────── ORDERS LOGIC ──────────── */
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/orders/restaurant/${restaurantId}`)
+    api
+      .get(`/orders/restaurant/${restaurantId}`)
       .then((r) => setOrders(r.data))
       .catch(console.error);
   }, [restaurantId]);
@@ -89,7 +89,7 @@ export default function RestaurantPanel() {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/orders/${id}/status`, { status });
+      await api.put(`/orders/${id}/status`, { status });
     } catch (err) {
       console.error(err);
     }
@@ -111,7 +111,7 @@ export default function RestaurantPanel() {
 
   /* ──────────── MENU LOGIC ──────────── */
   useEffect(() => {
-    axios
+    api
       .get(`${MENU_API}/${restaurantId}`)
       .then((r) => setMenuItems(r.data))
       .catch(console.error);
@@ -146,10 +146,10 @@ export default function RestaurantPanel() {
         image: menuForm.image.trim(),
       };
       if (editingId) {
-        const r = await axios.put(`${MENU_API}/item/${editingId}`, payload);
+        const r = await api.put(`${MENU_API}/item/${editingId}`, payload);
         setMenuItems((p) => p.map((i) => (i.id === editingId ? r.data : i)));
       } else {
-        const r = await axios.post(`${MENU_API}/${restaurantId}`, payload);
+        const r = await api.post(`${MENU_API}/${restaurantId}`, payload);
         setMenuItems((p) => [...p, r.data]);
       }
       resetMenu();
@@ -175,13 +175,13 @@ export default function RestaurantPanel() {
 
   const deleteItem = async (id) => {
     if (!confirm("Delete this item?")) return;
-    await axios.delete(`${MENU_API}/item/${id}`);
+    await api.delete(`${MENU_API}/item/${id}`);
     setMenuItems((p) => p.filter((i) => i.id !== id));
   };
 
   const toggleAvailability = async (item) => {
     try {
-      const r = await axios.put(`${MENU_API}/item/${item.id}`, {
+      const r = await api.put(`${MENU_API}/item/${item.id}`, {
         ...item,
         available: !item.available,
       });

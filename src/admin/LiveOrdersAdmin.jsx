@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from "react";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
 import api from "../config/api";
 
 const TABS = [

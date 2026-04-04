@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
+import api from "../config/api";
 
 export default function AllOrders() {
   const [orders, setOrders] = useState([]);
   const [filter, setFilter] = useState("ALL");
 
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/superadmin/orders`)
+    api
+      .get(`/superadmin/orders`)
       .then((res) => setOrders(res.data))
       .catch(console.error);
   }, []);

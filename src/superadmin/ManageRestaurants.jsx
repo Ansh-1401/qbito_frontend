@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
+import api from "../config/api";
 
 const emptyForm = {
   name: "",
@@ -29,8 +29,8 @@ export default function ManageRestaurants() {
   const [showForm, setShowForm] = useState(false);
 
   const load = () =>
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/superadmin/restaurants`)
+    api
+      .get(`/superadmin/restaurants`)
       .then((res) => setRestaurants(res.data))
       .catch(console.error);
 
@@ -41,12 +41,12 @@ export default function ManageRestaurants() {
   const handleSave = async () => {
     const payload = { ...form, slug: form.slug || slugify(form.name) };
     if (editing) {
-      await axios.put(
-        `${import.meta.env.VITE_API_URL}/superadmin/restaurants/${editing}`,
+      await api.put(
+        `/superadmin/restaurants/${editing}`,
         payload
       );
     } else {
-      await axios.post(`${import.meta.env.VITE_API_URL}/superadmin/restaurants`, payload);
+      await api.post(`/superadmin/restaurants`, payload);
     }
     setForm(emptyForm);
     setEditing(null);
@@ -62,7 +62,7 @@ export default function ManageRestaurants() {
 
   const handleDelete = async (id) => {
     if (!confirm("Delete this restaurant?")) return;
-    await axios.delete(`${import.meta.env.VITE_API_URL}/superadmin/restaurants/${id}`);
+    await api.delete(`/superadmin/restaurants/${id}`);
     load();
   };
 
