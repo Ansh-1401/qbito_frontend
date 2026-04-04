@@ -39,19 +39,23 @@ export default function ManageRestaurants() {
   }, []);
 
   const handleSave = async () => {
-    const payload = { ...form, slug: form.slug || slugify(form.name) };
-    if (editing) {
-      await api.put(
-        `/superadmin/restaurants/${editing}`,
-        payload
-      );
-    } else {
-      await api.post(`/superadmin/restaurants`, payload);
+    try {
+      const payload = { ...form, slug: form.slug || slugify(form.name) };
+      if (editing) {
+        await api.put(`/superadmin/restaurants/${editing}`, payload);
+        alert("Restaurant updated successfully!");
+      } else {
+        await api.post(`/superadmin/restaurants`, payload);
+        alert("Restaurant created successfully!");
+      }
+      setForm(emptyForm);
+      setEditing(null);
+      setShowForm(false);
+      load();
+    } catch (err) {
+      console.error("Save failed:", err);
+      alert(err.response?.data?.error || "Failed to save restaurant. Check if the slug is unique.");
     }
-    setForm(emptyForm);
-    setEditing(null);
-    setShowForm(false);
-    load();
   };
 
   const handleEdit = (r) => {
@@ -62,8 +66,13 @@ export default function ManageRestaurants() {
 
   const handleDelete = async (id) => {
     if (!confirm("Delete this restaurant?")) return;
-    await api.delete(`/superadmin/restaurants/${id}`);
-    load();
+    try {
+      await api.delete(`/superadmin/restaurants/${id}`);
+      load();
+    } catch (err) {
+      console.error("Delete failed:", err);
+      alert("Failed to delete restaurant.");
+    }
   };
 
   return (
@@ -99,7 +108,7 @@ export default function ManageRestaurants() {
             <div className="grid sm:grid-cols-2 gap-3">
               {[
                 { key: "name", label: "Name", type: "text" },
-                { key: "slug", label: "Slug", type: "text" },
+                { key: "slug", label: "Slug (leave blank for auto)", type: "text" },
                 { key: "place", label: "Place", type: "text" },
                 { key: "tags", label: "Tags", type: "text" },
                 { key: "category", label: "Category", type: "text" },
@@ -126,30 +135,15 @@ export default function ManageRestaurants() {
             </div>
             <div className="mt-3">
               <label className="text-[10px] text-gray-500 uppercase tracking-widest font-bold block mb-1">
-                Cover Image Upload
+                Cover Image URL
               </label>
               <div className="flex gap-3 items-center">
                 <input
-                  type="file"
-                  accept="image/*"
-                  onChange={async (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    
-                    const formData = new FormData();
-                    formData.append("file", file);
-                    
-                    try {
-                      const res = await axios.post(`${import.meta.env.VITE_API_URL}/media/upload`, formData, {
-                        headers: { "Content-Type": "multipart/form-data" }
-                      });
-                      setForm({ ...form, cover: res.data.url });
-                    } catch (err) {
-                      console.error("Upload failed", err);
-                      alert("Image upload failed");
-                    }
-                  }}
-                  className="flex-1 w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-500/20 file:text-purple-300 hover:file:bg-purple-500/30 transition cursor-pointer"
+                  type="text"
+                  value={form.cover || ""}
+                  onChange={(e) => setForm({ ...form, cover: e.target.value })}
+                  placeholder="https://example.com/image.jpg"
+                  className="w-full rounded-lg px-3 py-2 bg-white/5 border border-white/10 outline-none focus:border-purple-500/50 transition text-sm"
                 />
                 {form.cover && (
                   <img src={form.cover} alt="Preview" className="h-10 w-10 object-cover rounded-md border border-white/10" />
